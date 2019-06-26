@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+<title>購入確認</title>
+</head>
+<body>
+	<header>
+        <ul>
+            <li class="headmenu">
+                <form action="/ec/index" method="get">
+                    <input type="submit" value="EC">
+                </form>
+            </li>
+            <li class="headmenu">
+                <form action="/exhibitor/login">
+                     <input type="submit" value="管理者ログイン">
+                </form>
+            </li>
+            <li class="headmenu">
+                <form action="/ec/items">
+                    <input type="submit" value="カート確認">
+                </form>
+            </li>
+        </ul>
+	</header> 
+	
+	 <div th:each="entity : ${registedItems}">
+	 	 <p>
+	 	 	<span th:text="${entity.getName()}"></span>
+	 	 	<span th:text="${entity.getPrice()}"></span>
+	 	 	<span th:text="${totalCount[entity.index]}"></span>
+	 	 </p>
+	 </div>
+	
+	<form action="/ec/doPurchase" method="post">
+		<input type="hidden" name="itemsCount" th:value="${itemsCount}">
+		<input type="submit" value="購入">
+	</form>
+</body>
+</html>

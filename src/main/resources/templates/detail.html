@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>商品詳細</title>
+</head>
+<body>
+	<div th:if="${itemEntity}">
+
+        <p th:inline="text" class="block">商品名： [[ ${itemEntity.getName()} ]]</p>
+        <img alt="商品画像" width="452" height="420"
+            th:src="${itemEntity.getImagePath()}">
+        <p th:inline="text" class="block">商品詳細： [[ ${itemEntity.getDetail()}
+            ]]</p>
+        <p th:inline="text" class="block">税抜き価格： [[ ${itemEntity.getPrice()}
+            ]]</p>
+        <p th:inline="text" class="block">ブランド： [[
+            ${itemEntity.getBrandsEntity().getBrandName()} ]]</p>
+        <p th:inline="text" class="block">在庫数： [[ ${itemEntity.getStock()} ]]</p>
+
+
+    </div>
+
+
+    <p>購入数</p>
+
+    <form action="/ec/regist" method="POST">
+        <select name="count">
+            <option th:each="stock: ${stockOption}" th:text="${stock}"></option>
+        </select>
+        <input type="hidden" name="itemId" th:value="${itemEntity.getItemId()}" />
+        <input type="submit" value="カートに入れる">
+    </form>
+<body>
+	
+</html>

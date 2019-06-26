@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>items cart</title>
+</head>
+<body>
+	<header>
+		<form action="/ec/index" method="get">
+			<input type="submit" value="EC">
+		</form>
+	</header>
+	<h1>カート</h1>
+	<div th:if="${registedItems}" th:each="registItem,registItemStatus : ${registedItems}">
+		<div th:if="${registItem}">
+			<img alt="商品画像" th:src="${registItem.getImagePath()}" width="452" height="420">
+			<p th:inline="text">[[ ${registItem.getName()} ]]</p>
+			<p th:inline="text">[[ ${registItem.getDetail()} ]]</p>
+			<p th:inline="text">[[ ${registItem.getPrice()} ]]</p>
+			<p th:inline="text">[[ ${registItem.getBrandsEntity().getBrandName()} ]]</p>
+			<select name="count" th:value="${registItem.getStock()}" form="purchase">
+				<option th:each="stock : ${stockOptions[registItemStatus.index]}" th:text="${stock}" th:selected="${stock}==${itemsCount[registItemStatus.index]}"></option>
+			</select>
+			<input type="hidden" name="itemId" th:value="${registItem.getItemId()}" form="purchase">
+			<form action="/ec/delete" method="post">
+				<input type="hidden" name="itemId" th:value="${registItem.getItemId()}">
+				<input type="submit" value="削除">
+			</form>
+		</div>
+	</div>
+	<form id="purchase" action="/ec/purchaseConfirm" method="GET">
+		<input type="submit" value="購入確認画面に進む">
+	</form>
+</body>
+</html>

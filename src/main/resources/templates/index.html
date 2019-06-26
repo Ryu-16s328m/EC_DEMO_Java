@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+<title>EC</title>
+</head>
+<body>
+	<header>
+        <ul>
+            <li class="headmenu">
+                <form action="/ec/index" method="get">
+                    <input type="submit" value="EC">
+                </form>
+            </li>
+            <li class="headmenu">
+                <form action="/exhibitor/login">
+                     <input type="submit" value="管理者ログイン">
+                </form>
+            </li>
+            <li class="headmenu">
+                <form action="/ec/items">
+                    <input type="submit" value="カート確認">
+                </form>
+            </li>
+        </ul>
+	</header> 
+	
+	<h1 class="message">こんにちは、ゲストさん</h1>
+	
+	<form class="search" action="/ec/index" method="get">
+		<p><input type="text" name="freeword" placeholder="フリーワード" th:value="${freeword}"></p>
+		<p>
+			<ul>
+				<li><input type="radio" name="genre" value="1" th:checked="${genre}==1">ジャンル1</li>
+				<li><input type="radio" name="genre" value="2" th:checked="${genre}==2">ジャンル2</li>
+				<li><input type="radio" name="genre" value="3" th:checked="${genre}==3">ジャンル3</li>
+			</ul>
+		</p>
+			
+		<p><input type="text" name="fromPrice" placeholder="値段(下限)" th:value="${fromPrice}"></p>
+		<p><input type="text" name="toPrice" placeholder="値段(上限)" th:value="${toPrice}"></p>
+		<p>
+			<ul>
+				<li><input type="radio" name="brand" value="1" th:checked="${brand}==1">ブランド1</li>
+				<li><input type="radio" name="brand" value="2" th:checked="${brand}==2">ブランド2</li>
+				<li><input type="radio" name="brand" value="3" th:checked="${brand}==3">ブランド3</li>
+			</ul>
+		</p>
+		<p>表示順</p>
+		<div th:switch="${sort}">
+			<p th:case="1">値段が高い順<input type="radio" name="sort" value="1" checked>値段が安い順<input type="radio" name="sort" value="2"></p>
+			<p th:case="*">値段が高い順<input type="radio" name="sort" value="1">値段が安い順<input type="radio" name="sort" value="2" checked></p>
+		</div>
+		<p><input type="submit" value="検索"></p>
+	</form>
+	<form action="/ec/index" method="get">
+		<input type="submit" value="検索条件のクリア">
+	</form>
+	
+	<h1>商品一覧</h1>
+	<div th:if="${itemsEntityList}" th:each="entity : ${itemsEntityList}">
+		<img alt="商品画像" th:src="${entity.getImagePath()}" width="452" height="420">
+		<p th:inline="text">[[ ${entity.getName()} ]]</p>
+		<p th:inline="text">[[ ${entity.getPrice()} ]]</p>
+		<p th:inline="text">[[ ${entity.getBrandsEntity().getBrandName()} ]]</p>
+		<p th:inline="text">[[ ${entity.getGenresEntity().getGenreName()} ]]</p>
+		<form action="/ec/detail" method="GET">
+			<input type="hidden" name="id" th:value="${entity.getItemId()}" />
+			<input type="submit" value="詳細を見る">
+		</form>
+	</div>
+	<div th:unless="${itemsEntityList.totalPages}==0">
+		<div th:if="${itemsEntityList}">
+			<ul>
+        		<li style="display:inline">
+          		  <a th:href="@{${url}(page=0,(freeword=${freeword}),(genre=${genre}),(fromPrice=${fromPrice}),(toPrice=${toPrice}),(brand=${brand}),(sort=${sort}))}">←先頭</a>
+        		</li>
+        		<li th:each="i : ${#numbers.sequence(0, itemsEntityList.totalPages-1)}" style="display:inline">
+        		    <span th:if="${i}==${itemsEntityList.number}" th:text="${i + 1}"></span>
+        		    <a th:if="${i}!=${itemsEntityList.number}" th:href="@{${url}(page=${i},(freeword=${freeword}),(genre=${genre}),(fromPrice=${fromPrice}),(toPrice=${toPrice}),(brand=${brand}),(sort=${sort}))}" th:text="${i + 1}"></a>
+        		</li>
+ 
+        		<li style="display:inline">
+          		<a th:href="@{${url}(page=(${itemsEntityList.totalPages}-1),(freeword=${freeword}),(genre=${genre}),(fromPrice=${fromPrice}),(toPrice=${toPrice}),(brand=${brand}),(sort=${sort}))}">末尾➝</a>
+        		</li>
+    		</ul>
+		</div>
+	</div>
+</body>
+</html>
